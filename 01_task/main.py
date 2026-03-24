@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, status
 from models import tensorArrays, statArray
 import torch
 
@@ -10,7 +10,7 @@ def health():
     return {"message": "Server is working okay"}
 
 
-@app.post("/add")
+@app.post("/add", status_code=status.HTTP_201_CREATED)
 def addArrays(data: tensorArrays) -> dict:
     mata = torch.tensor(data.mat1, dtype=torch.float32)
     matb = torch.tensor(data.mat2, dtype=torch.float32)
@@ -23,7 +23,7 @@ def addArrays(data: tensorArrays) -> dict:
     return {"result": result.tolist(), **tensor_metadata(result)}
 
 
-@app.post("/matmul")
+@app.post("/matmul", status_code=status.HTTP_201_CREATED)
 def multiplyArray(data: tensorArrays) -> dict:
     mata = torch.tensor(data.mat1, dtype=torch.float32)
     matb = torch.tensor(data.mat2, dtype=torch.float32)
@@ -37,7 +37,7 @@ def multiplyArray(data: tensorArrays) -> dict:
     return {"result": product.tolist(), **tensor_metadata(product)}
 
 
-@app.post("/stats")
+@app.post("/stats", status_code=status.HTTP_201_CREATED)
 def stats(arrayItem: statArray) -> dict:
     array_tensor = torch.tensor(arrayItem.array, dtype=torch.float32)
 
